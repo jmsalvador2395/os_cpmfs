@@ -8,6 +8,10 @@
 #define EXTENT_SIZE 32
 #define BLOCKS_PER_EXTENT 16 
 #define debugging false
+#define TOTAL_BLOCKS 256
+
+bool freeList[TOTAL_BLOCKS];
+uint8_t *e;
 
 typedef struct dirStruct { 
 uint8_t status; // 0xe5 = unused, 0-16 = user number
@@ -20,6 +24,7 @@ uint8_t RC;
 uint8_t blocks[BLOCKS_PER_EXTENT]; // array of disk sectors used
 } DirStructType;
 
+DirStructType *d;
 
 /* XL and XH store the extent number, bits 5-7 of XL are zero, bits 0-4 are
    low-order bits of extent number, bits 6-7 of XH are zero, bits 0-5 hold high
@@ -32,6 +37,8 @@ uint8_t blocks[BLOCKS_PER_EXTENT]; // array of disk sectors used
 */ 
 
 typedef uint8_t Extent[32];
+
+void print_block_hex(uint8_t *block);
 
 //function to allocate memory for a DirStructType (see above), and populate it, given a
 //pointer to a buffer of memory holding the contents of disk block 0 (e), and an integer index
