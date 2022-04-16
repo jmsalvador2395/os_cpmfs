@@ -21,6 +21,7 @@ void printBuffer(uint8_t buffer[],int size) {
 
 
 int main(int argc, char * argv[]) { 
+  extern bool freeList[256];
   uint8_t buffer1[BLOCK_SIZE],buffer2[BLOCK_SIZE]; 
   int i; 
   readImage("image1.img"); 
