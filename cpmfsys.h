@@ -8,10 +8,10 @@
 #define EXTENT_SIZE 32
 #define BLOCKS_PER_EXTENT 16 
 #define debugging false
-#define TOTAL_BLOCKS 256
 
-bool freeList[TOTAL_BLOCKS];
-uint8_t *e;
+bool freeList[NUM_BLOCKS];
+uint8_t e[BLOCK_SIZE];
+uint8_t e_set;
 
 typedef struct dirStruct { 
 uint8_t status; // 0xe5 = unused, 0-16 = user number
