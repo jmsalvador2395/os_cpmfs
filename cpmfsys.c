@@ -4,18 +4,9 @@
 #include "cpmfsys.h"
 #include "diskSimulator.h"
 
+bool freeList[NUM_BLOCKS];
+uint8_t e[BLOCK_SIZE];
 uint8_t e_set=0;
-
-void print_block_hex(uint8_t *block){
-	int i, j;
-	for (i=0; i<32; i++){
-		for (j=0; j<32; j++){
-			printf("%02x ", block[i*j+j]);
-		}
-		printf("\n");
-	}
-}
-
 
 //function to allocate memory for a DirStructType (see above), and populate it, given a
 //pointer to a buffer of memory holding the contents of disk block 0 (e), and an integer index
@@ -96,12 +87,7 @@ void writeDirStruct(DirStructType *d, uint8_t index, uint8_t *e){
 // that block i of the disk is free. block zero is never free, since it holds
 // the directory. freeList[i] == false means the block is in use. 
 void makeFreeList(){
-	//create e pointer
-	/*
-	uint8_t *e;
-	e=malloc(sizeof(uint8_t)*1024);
-	blockRead(e, 0);
-	*/
+	DirStructType *d;
 	if (!e_set){
 		blockRead(e, 0);
 		e_set=1;
@@ -271,7 +257,7 @@ void cpmDir(){
 	}
 
 	int i, j;
-
+	DirStructType *d;
 	printf("------------file directory------------\n");
 	//loop for all directory entries
 	for (i=0; i<16; i++){
@@ -289,7 +275,7 @@ void cpmDir(){
 			NB--;
 
 			int fsize=NB*1024+d->RC*128+d->BC;
-			printf("block %d: %s.%s %d bytes\n", i,d->name, d->extension, fsize);
+			printf("%s.%s %d bytes\n",d->name, d->extension, fsize);
 		}
 		free(d);
 	}
@@ -397,6 +383,7 @@ int  cpmDelete(char * name){
 	if (block_num == -1)
 		return-1;
 
+	DirStructType *d;
 	d=mkDirStruct(block_num, e);
 
 	//create replacement DirStructType
