@@ -106,12 +106,8 @@ void makeFreeList(){
 		if (d->status != 0xe5){
 
 			//read blocks into freeList
-			for (j=0; j<16; j++){
-				if (d->blocks[j] != 0)
-					freeList[d->blocks[j]]=false;
-				else
-					break;
-			}
+			for (j=0; j<16; j++)
+				freeList[d->blocks[j]]=false;
 		}
 		free(d);
 	}
