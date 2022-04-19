@@ -252,6 +252,8 @@ void cpmDir(){
 		e_set=1;
 	}
 
+	char temp_name[9];
+	char temp_ext[4];
 	int i, j;
 	DirStructType *d;
 	printf("------------file directory------------\n");
@@ -267,11 +269,19 @@ void cpmDir(){
 				if (d->blocks[j] != 0)
 					NB++;
 			}
+
+			//convert spaces
+			memcpy(temp_name, d->name, 9);
+			memcpy(temp_ext,  d->extension, 4);
+			for (j=0; j<9; j++)
+				if (temp_name[j] == 32) temp_name[j]=0;
+			for (j=0; j<4; j++)
+				if (temp_ext[j]  == 32) temp_ext[j] =0;
 			//decrement because last block is taken care of by RC and BC
 			NB--;
 
 			int fsize=NB*1024+d->RC*128+d->BC;
-			printf("%s.%s %d bytes\n",d->name, d->extension, fsize);
+			printf("%s.%s %d bytes\n",temp_name, temp_ext, fsize);
 		}
 		free(d);
 	}
@@ -396,7 +406,9 @@ int  cpmDelete(char * name){
 
 	int i;
 	for (i=0; i < 16; i++){
-		freeList[d->blocks[i]]=0;
+		if (d->blocks[i] != 0){
+			freeList[d->blocks[i]]=true;
+		}
 	}
 
 	writeDirStruct(del, block_num, e);
